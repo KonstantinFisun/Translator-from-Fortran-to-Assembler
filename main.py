@@ -1,13 +1,33 @@
 import json
 
-SERVICE_WORDS = ['abs', 'begin', 'cos', 'do', 'downto', 'else', 'end', 'exp', 'for', 'function', 'goto', 'if', 'integer', 'ln', 'of', 'procedure', 'program', 'read', 'readln', 'real', 'repeat', 'sin', 'sqrt', 'string', 'then', 'to', 'until', 'var', 'while', 'write', 'writeln']
-OPERATIONS = ['*', '+', '-', '..', '/', ':=', '<', '<=', '<>', '=', '>', '>=', 'and', 'div', 'mod', 'not', 'or']
+SERVICE_WORDS = [
+    'ADMIT'  , 'ALLOCATABLE'   , 'ALLOCATE'    , 'ASSIGN'
+    , 'ASSIGNMENT'    , 'ATEND'    , 'BACKSPACE'    , 'BLOCKDATA'
+    , 'CALL'    , 'CASE'    , 'CHARACTER'    , 'CLOSE'
+    , 'COMMON'    , 'COMPLEX'    , 'CONTAINS'    , 'CONTINUE'
+    , 'CYCLY'    , 'DATA'    , 'DEALLOCATE'    , 'DEFAULT'
+    , 'DIMENSION'    , 'DO'    , 'DOUBLE'    , 'ELSE'
+    , 'END'    , 'EXIT'    , 'EXTERNAL'    , 'FORMAT'
+    , 'FUNCTION'    , 'GO TO'    , 'IF'    , 'IMPICIT'
+    , 'INCLUDE'    , 'INQUIRE'    , 'INTEGER'    , 'INTENT'    , 'INTERFACE'
+    , 'INTRINSIC'    , 'LOGICAL'    , 'MAP'    , 'MODULE'    , 'NAMELIST'
+    , 'NONE'    , 'OPEN'    , 'OPTIONAL'    , 'PARAMETER'
+    , 'PAUSE'    , 'POINTER'    , 'PRINT'    , 'WRITE'    , 'PRECISION'
+    , 'ENDFILE'    , 'PROCEDURE'    , 'END IF'    , 'PROGRAM'    , 'ENTRY'
+    , 'EQUIVALENCE'    , 'READ'    , 'REAL'    , 'RECORD'    , 'RECURSIVE'
+    , 'RETURN'    , 'REWIND'    , 'SAVE'    , 'STOP'    , 'STRUCTURE'
+    , 'SUBRCUTINE'    , 'TARGET'    , 'THEN'    , 'TYPE'    , 'UNION'    , 'USE'    , 'WHILE'
+]
+OPERATIONS = ['GT', 'LT', 'GE', 'LE', 'NE', 'EQ', 'NEQV',
+              '*', '+', '-', '**', '.', '/', '=', '<', '<=', '<>', '=', '>', '>=', 'AND', 'OR', 'FALSE', 'TRUE', 'EQV', 'NOT']
 SEPARATORS = ['\t', '\n', ' ', '(', ')', ',', '.', ':', ';', '[', ']']
 
+
 def check(tokens, token_class, token_value):
-    if not(token_value in tokens[token_class]):
+    if not (token_value in tokens[token_class]):
         token_code = str(len(tokens[token_class]) + 1)
         tokens[token_class][token_value] = token_class + token_code
+
 
 def get_operation(input_sequence, i):
     for k in range(3, 0, -1):
@@ -17,11 +37,13 @@ def get_operation(input_sequence, i):
                 return buffer
     return ''
 
+
 def get_separator(input_sequence, i):
     buffer = input_sequence[i]
     if buffer in SEPARATORS:
         return buffer
     return ''
+
 
 # лексемы
 tokens = {'W': {}, 'I': {}, 'O': {}, 'R': {}, 'N': {}, 'C': {}}
@@ -234,11 +256,11 @@ while i < len(input_sequence):
 
 # файлы, содержащие все таблицы лексем
 for token_class in tokens.keys():
-    #if len(tokens[token_class]) > 0:
-        #f = open('%s.txt' % token_class, 'w')
-        #for token_value, token_code in tokens[token_class].items():
-            #f.write(token_code + ' ' + token_value + '\n')
-        #f.close()
+    # if len(tokens[token_class]) > 0:
+    # f = open('%s.txt' % token_class, 'w')
+    # for token_value, token_code in tokens[token_class].items():
+    # f.write(token_code + ' ' + token_value + '\n')
+    # f.close()
     with open('%s.json' % token_class, 'w') as write_file:
         data = {val: key for key, val in tokens[token_class].items()}
         json.dump(data, write_file, indent=4)
