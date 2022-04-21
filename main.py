@@ -25,18 +25,19 @@ def check(tokens, token_class, token_value):
         tokens[token_class][token_value] = token_class + token_code
 
 
+# Получаем операцию
 def get_operation(input_sequence, i):
-    for k in range(3, 0, -1):
-        if i + k < len(input_sequence):
-            buffer = input_sequence[i:i + k]
-            if buffer in OPERATIONS:
+    for k in range(3, 0, -1): # Смотрим все операции от 3 символов и до 1
+        if i + k < len(input_sequence): # Проверяем, чтобы не был конец файла
+            buffer = input_sequence[i:i + k] # Помещаем буффер наши цепочку символов
+            if buffer in OPERATIONS: # Возвращаем, если это операция
                 return buffer
     return ''
 
-
+# Получаем разделитель
 def get_separator(input_sequence, i):
-    buffer = input_sequence[i]
-    if buffer in SEPARATORS:
+    buffer = input_sequence[i] # Записываем в буффер
+    if buffer in SEPARATORS: # Если есть, то возвращаем разделитель
         return buffer
     return ''
 
@@ -66,16 +67,21 @@ def main():
     input_sequence = f.read() # Считываем файл
     f.close() # Закрываем
 
-    i = 0
-    state = 'S'
-    output_sequence = buffer = ''
+    i = 0 # Переменная для итерации
+    state = 'S' # Начальное состояние
+    output_sequence = buffer = '' # Выход
 
+    # Пока есть символы
     while i < len(input_sequence):
-        symbol = input_sequence[i]
+        symbol = input_sequence[i] # Текущий символ
         operation = get_operation(input_sequence, i)
         separator = get_separator(input_sequence, i)
+
+        # Если начальное состояние S
         if state == 'S':
-            buffer = ''
+
+            buffer = '' # Буфер
+
             if symbol.isalpha():
                 state = 'q1'
                 buffer += symbol
