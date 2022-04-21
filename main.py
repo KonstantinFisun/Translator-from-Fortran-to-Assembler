@@ -82,61 +82,89 @@ def main():
 
             buffer = '' # Буфер
 
+            # Если встретили букву
             if symbol.isalpha():
                 state = 'q1'
                 buffer += symbol
+
+            # Если встретили цифру
             elif symbol.isdigit():
                 state = 'q3'
                 buffer += symbol
+
+            # Если встретили апостроф
             elif symbol == "'":
                 state = 'q9'
                 buffer += symbol
+
+            # Если встретили восклицательный знак
             elif symbol == '/':
                 state = 'q10'
-            elif symbol == '{':
-                state = 'q12'
+
+            # Если встретили операцию
             elif operation:
-                check(tokens, 'O', operation)
-                output_sequence += tokens['O'][operation] + ' '
-                i += len(operation) - 1
+                check(tokens, 'O', operation) # Добавили операцию если её нет
+                output_sequence += tokens['O'][operation] + ' ' # Добавили в выходную последовательность
+                i += len(operation) - 1 # Перешли к след символу
+
+            # Если встретили разделитель
             elif separator:
-                if separator != ' ':
-                    check(tokens, 'R', separator)
-                    output_sequence += tokens['R'][separator]
-                    if separator == '\n':
+                if separator != ' ': # Если это не пробел
+                    check(tokens, 'R', separator) # Добавили разделитель если его нет
+                    output_sequence += tokens['R'][separator] # Добавили в выходную последовательность
+                    if separator == '\n': # Если новая строка
                         output_sequence += '\n'
                     else:
-                        output_sequence += ' '
+                        output_sequence += ' ' # Иначе пробел
+
+            # Если конец файла
             elif i == len(input_sequence) - 1:
-                state = 'Z'
+                state = 'Z' # Конечное состояние
+
+        # Если начальное состояние q1
         elif state == 'q1':
+            # Если опять символ
             if symbol.isalpha():
-                buffer += symbol
+                buffer += symbol # Добавили в буффер
+
+            # Если встретили цифру, то это идентификатор
             elif symbol.isdigit():
-                state = 'q2'
-                buffer += symbol
+                state = 'q2' # перешли в новое состояние
+                buffer += symbol # Добавили в буффер
+
+            # Если это не цифра и не буква
             else:
+
+                # Семантическая процедура 1
                 if operation or separator:
                     if buffer in SERVICE_WORDS:
                         output_sequence += tokens['W'][buffer] + ' '
                     elif buffer in OPERATIONS:
                         output_sequence += tokens['O'][buffer] + ' '
+
+                    # Семантическая процедура 2
                     else:
-                        check(tokens, 'I', buffer)
-                        output_sequence += tokens['I'][buffer] + ' '
+                        check(tokens, 'I', buffer) # Проверили встречался ли раньше идентификатор
+                        output_sequence += tokens['I'][buffer] + ' ' # Добавили в выходную последовательность
+
+                    # Если встретили операцию
                     if operation:
-                        check(tokens, 'O', operation)
-                        output_sequence += tokens['O'][operation] + ' '
-                        i += len(operation) - 1
-                    if separator:
-                        if separator != ' ':
-                            check(tokens, 'R', separator)
-                            output_sequence += tokens['R'][separator]
-                            if separator == '\n':
+                        check(tokens, 'O', operation)  # Добавили операцию если её нет
+                        output_sequence += tokens['O'][operation] + ' '  # Добавили в выходную последовательность
+                        i += len(operation) - 1  # Перешли к след символу
+
+                    # Если встретили разделитель
+                    elif separator:
+                        if separator != ' ':  # Если это не пробел
+                            check(tokens, 'R', separator)  # Добавили разделитель если его нет
+                            output_sequence += tokens['R'][separator]  # Добавили в выходную последовательность
+                            if separator == '\n':  # Если новая строка
                                 output_sequence += '\n'
                             else:
-                                output_sequence += ' '
-                state = 'S'
+                                output_sequence += ' '  # Иначе пробел
+                state = 'S' # перешли в начальное состояние
+
+        # Если начальное состояние q2
         elif state == 'q2':
             if symbol.isalnum():
                 buffer += symbol
@@ -157,6 +185,8 @@ def main():
                             else:
                                 output_sequence += ' '
                     state = 'S'
+
+        # Если начальное состояние q3
         elif state == 'q3':
             if symbol.isdigit():
                 buffer += symbol
@@ -183,10 +213,14 @@ def main():
                             else:
                                 output_sequence += ' '
                     state = 'S'
+
+        # Если начальное состояние q4
         elif state == 'q4':
             if symbol.isdigit():
                 state = 'q5'
                 buffer += symbol
+
+        # Если начальное состояние q5
         elif state == 'q5':
             if symbol.isdigit():
                 buffer += symbol
@@ -210,6 +244,8 @@ def main():
                             else:
                                 output_sequence += ' '
                     state = 'S'
+
+        # Если начальное состояние q6
         elif state == 'q6':
             if symbol == '-' or symbol == '+':
                 state = 'q7'
@@ -217,10 +253,14 @@ def main():
             elif symbol.isdigit():
                 state = 'q8'
                 buffer += symbol
+
+        # Если начальное состояние q7
         elif state == 'q7':
             if symbol.isdigit():
                 state = 'q8'
                 buffer += symbol
+
+        # Если начальное состояние q8
         elif state == 'q8':
             if symbol.isdigit():
                 buffer += symbol
@@ -241,6 +281,8 @@ def main():
                             else:
                                 output_sequence += ' '
                 state = 'S'
+
+        # Если начальное состояние q9
         elif state == 'q9':
             if symbol != "'":
                 buffer += symbol
@@ -249,17 +291,25 @@ def main():
                 check(tokens, 'C', buffer)
                 output_sequence += tokens['C'][buffer] + ' '
                 state = 'S'
+
+        # Если начальное состояние q10
         elif state == 'q10':
             if symbol == '/':
                 state = 'q11'
+
+        # Если начальное состояние q11
         elif state == 'q11':
             if symbol == '\n':
                 state = 'S'
             elif i == len(input_sequence) - 1:
                 state = 'Z'
+
+        # Если начальное состояние q12
         elif state == 'q12':
             if symbol == '}':
                 state = 'q11'
+
+        # Если начальное состояние q13
         elif state == 'q13':
             if symbol == '\n':
                 state = 'S'
