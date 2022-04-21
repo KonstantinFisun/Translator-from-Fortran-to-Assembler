@@ -1,0 +1,25 @@
+PROGRAM quadratic
+!comment
+IMPLICIT NONE
+REAL :: a, b, c
+REAL :: discriminant
+REAL :: x1, x2
+
+PRINT *, "Введите коэффициенты a, b and c:"
+
+READ *, a, b, c
+discriminant = b**2 - 4*a*c
+IF ( discriminant>0 ) THEN
+    x1 = ( -b + SQRT(discriminant)) / (2 * a)
+    x2 = ( -b - SQRT(discriminant)) / (2 * a)
+    PRINT *, "Real roots:"
+    PRINT *, x1, x2
+ELSE IF ( discriminant==0 ) THEN
+    x1 = - b / (2 * a)
+    PRINT *, "Real root:"
+    PRINT *, x1
+ELSE
+
+    PRINT *, "No real roots."
+END IF
+END PROGRAM quadratic
