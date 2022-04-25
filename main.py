@@ -5,17 +5,16 @@ SERVICE_WORDS = [
     'ADMIT', 'ALLOCATABLE', 'ALLOCATE', 'ASSIGN', 'ASSIGNMENT', 'ATEND', 'BACKSPACE', 'BLOCKDATA',
     'CALL', 'CASE', 'CHARACTER', 'CLOSE', 'COMMON', 'COMPLEX', 'CONTAINS', 'CONTINUE',
     'CYCLY', 'DATA', 'DEALLOCATE', 'DEFAULT', 'DIMENSION', 'DO', 'DOUBLE', 'ELSE',
-    'END', 'EXIT', 'EXTERNAL', 'FORMAT', 'FUNCTION', 'GO TO', 'IF', 'IMPICIT', 'NONE',
+    'END', 'EXIT', 'EXTERNAL', 'FORMAT', 'FUNCTION', 'GO TO', 'IF', 'IMPLICIT', 'NONE',
     'INCLUDE', 'INQUIRE', 'INTEGER', 'INTENT', 'INTERFACE', 'INTRINSIC', 'LOGICAL', 'MAP', 'MODULE', 'NAMELIST',
     'NONE', 'OPEN', 'OPTIONAL', 'PARAMETER', 'PAUSE', 'POINTER', 'PRINT', 'WRITE', 'PRECISION',
     'ENDFILE', 'PROCEDURE', 'END IF', 'PROGRAM', 'ENTRY', 'EQUIVALENCE', 'READ', 'REAL', 'RECORD', 'RECURSIVE',
-    'RETURN', 'REWIND', 'SAVE', 'STOP', 'STRUCTURE', 'SUBRCUTINE', 'TARGET', 'THEN', 'TYPE', 'UNION', 'USE', 'WHILE', 'INTEGER'
+    'RETURN', 'REWIND', 'SAVE', 'STOP', 'STRUCTURE', 'SUBRCUTINE', 'TARGET', 'THEN', 'TYPE', 'UNION', 'USE', 'WHILE'
 ]
 
 # Операции
-OPERATIONS = ['.GT.', '.LT.', '.GE.', '.LE.', '.NE.', '.EQ.', '.NEQV.',
-              '*', '+', '-', '**', '.', '/', '=', '<', '<=', '<>', '=', '>', '>=', 'SQRT', 'AND', 'OR', '.FALSE.',
-              '.TRUE.', 'EQV', 'NOT', '::']
+OPERATIONS = ['*', '+', '-', '**', '.', '/', '=', '<', '<=', '<>', '=', '>', '>=', '::', '==', 'SQRT', 'AND', 'OR', 'FALSE',
+              'TRUE', 'NOT']
 # Разделители
 SEPARATORS = ['\t', '\n', ' ', '(', ')', ',', '.', ':', ';', '[', ']']
 
@@ -94,13 +93,13 @@ def main():
                 state = 'q3'
                 buffer += symbol
 
-            # Если встретили апостроф
-            elif symbol == "'":
+            # Если встретили кавычки
+            elif symbol == "\"":
                 state = 'q9'
                 buffer += symbol
 
             # Если встретили восклицательный знак
-            elif symbol == '/':
+            elif symbol == '!':
                 state = 'q10'
 
             # Если встретили операцию
@@ -302,10 +301,10 @@ def main():
         # Если начальное состояние q9
         elif state == 'q9':
             # Если символ не апостороф
-            if symbol != "'":
+            if symbol != "\"":
                 buffer += symbol  # Добавили в буффер
             # Если символ апостроф
-            elif symbol == "'":
+            elif symbol == "\"":
                 buffer += symbol  # Добавили в буффер
                 check(tokens, 'C', buffer)  # Добавили символьною константу если её нет
                 output_sequence += tokens['C'][buffer] + ' '  # Добавили в выходную последовательность
