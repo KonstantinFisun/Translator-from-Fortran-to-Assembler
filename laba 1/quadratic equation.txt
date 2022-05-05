@@ -19,7 +19,6 @@ ELSE IF ( discriminant==0 ) THEN
     PRINT *, "Real root:"
     PRINT *, x1
 ELSE
-
     PRINT *, "No real roots."
 END IF
 END PROGRAM quadratic

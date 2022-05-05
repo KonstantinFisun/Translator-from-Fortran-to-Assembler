@@ -1,0 +1,12 @@
+PROGRAM factorial  
+IMPLICIT NONE
+   ! Объявление переменных
+   INTEGER :: nfact = 1   
+   INTEGER :: n = 1 
+   ! вычисление факториалов до 10  
+   DO WHILE (n <= 10)       
+      nfact = nfact * n 
+      n = n + 1
+      PRINT *,  n, " ", nfact   
+   END DO
+END PROGRAM factorial  

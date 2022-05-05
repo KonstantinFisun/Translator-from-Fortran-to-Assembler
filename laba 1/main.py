@@ -64,7 +64,7 @@ def main():
         check(tokens, 'R', separator)
 
     # файл, содержащий текст на входном языке программирования
-    f = open('quadratic equation.txt', 'r')
+    f = open('factorial.txt', 'r')
     input_sequence = f.read()  # Считываем файл
     f.close()  # Закрываем
 

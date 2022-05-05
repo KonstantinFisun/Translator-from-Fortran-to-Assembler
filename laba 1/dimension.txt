@@ -1,0 +1,39 @@
+PROGRAM arrayProg
+! одномерный массив
+   REAL:: numbers(5) 
+! двухмерный массив
+   INTEGER:: matrix(3,3), i , j 
+   
+!заполнение
+   DO i=1,5
+      numbers(i) = i * 2.0
+   END DO
+   
+   !Вывод значений
+   DO i = 1, 5
+      PRINT *, numbers(i)
+   END DO
+   
+   !заполнение матрицы
+   DO i=1,3
+      DO j = 1, 3
+         matrix(i, j) = i+j
+      END DO
+   END DO
+   
+   !Вывод значений
+   DO i=1,3
+      DO j = 1, 3
+         PRINT *, matrix(i,j)
+      END DO 
+   END do
+   
+   !задание массива
+   numbers = (/1.5, 3.2, 4.5, 0.9, 7.2 /)
+   
+   !Вывод значений
+   DO i = 1, 5
+      PRINT *, numbers(i)
+   END DO
+   
+END PROGRAM arrayProg
