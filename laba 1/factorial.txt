@@ -1,7 +1,7 @@
 PROGRAM factorial  
 IMPLICIT NONE
    ! Объявление переменных
-   INTEGER :: nfact = 1   
+   INTEGER :: nfact = 1
    INTEGER :: n = 1 
    ! вычисление факториалов до 10  
    DO WHILE (n <= 10)       
