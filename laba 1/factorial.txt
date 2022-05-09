@@ -9,4 +9,4 @@ IMPLICIT NONE
       n = n + 1
       PRINT *,  n, " ", nfact   
    END DO
-END PROGRAM factorial  
+END PROGRAM factorial

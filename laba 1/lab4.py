@@ -26,8 +26,9 @@ row_counter = 1  # счётчик строк
 
 
 # обработка ошибочной ситуации
-def error():
+def error(str):
     print('Ошибка в строке', row_counter)
+    print(str)
     sys.exit()
 
 
@@ -35,38 +36,38 @@ def error():
 def scan():
     global i, nxtsymb, row_counter
     i += 1
-    # Если дошли до конца файла
-    if i >= len(match):
-        if not (nxtsymb in ['\n', ';', '}']):
-            error()
-    # Если все таки не конец файла
-    else:
-        for token_class in tokens.keys():  # Идем по классам лексем
-            if match[i] in tokens[token_class]:  # Если наша лексема нашлась
-                nxtsymb = tokens[token_class][match[i]]  # Записали значение лексемы в nxtsymb
-        if nxtsymb == '\n':  # Если это новая строчка
-            row_counter += 1  # Прибавили к счетчику
-            scan()  # Сканируем дальше
+    for token_class in tokens.keys():  # Идем по классам лексем
+        if match[i] in tokens[token_class]:  # Если наша лексема нашлась
+            nxtsymb = tokens[token_class][match[i]]  # Записали значение лексемы в nxtsymb
+    if nxtsymb == '\n':  # Если это новая строчка
+        row_counter += 1  # Прибавили к счетчику
+        scan()  # Сканируем дальше
 
 
 # программа
 def program():
     scan()  # Считали новый символ
-    if nxtsymb != "PROGRAM": error()  # Если встретили не PROGRAM, то ошибка
+    if nxtsymb != "PROGRAM": error("Ожидалось PROGRAM")  # Если встретили не PROGRAM, то ошибка
     scan()  # Считали новый символ
-    if not (name()): error()  # Если встретили не идентификатор, то ошибка
-
+    if not (name()): error("Не встречен идентификатор")  # Если встретили не идентификатор, то ошибка
+    program = nxtsymb # Название программы
+    scan() # Считали новый символ
+    if nxtsymb != "IMPLICIT": error("Ожидалось IMPLICIT") # Если не встретили IMPLICIT
+    scan() # Считали новый символ
+    if nxtsymb != "NONE": error("Ожидалось NONE") # Если не встретили NONE
+    operators()
+    scan()
+    if nxtsymb != program: error("Программа не закончена корректным именем")
 
 # операторы
 def operators():
     global i
     scan()
     while name() or \
-            nxtsymb in ['{', 'sub', 'if', 'while', 'do', 'for', 'goto',
-                        'continue', 'return', 'print']:
-        operator()
-        if nxtsymb == ';':
-            scan()
+            nxtsymb in ['SUBROUTINE', 'IF', 'DO', 'CALL', 'GOTO',
+                        'CONTINUE', 'RETURN', 'PRINT']:
+        operator() # Встретили оператор
+
         if nxtsymb == '}':
             break
 
@@ -96,30 +97,26 @@ def operator():
             expression()
         else:
             error()
-    elif nxtsymb == '{':
-        compound_operator()
-    elif nxtsymb == 'sub':
+    elif nxtsymb == 'SUBROUTINE': # Встретили функцию
         function()
-    elif nxtsymb == 'if':
+    elif nxtsymb == 'IF': # Встретили IF
         conditional_operator()
-    elif nxtsymb == 'while':
+    elif nxtsymb == 'WHILE': # Встретили WHILE
         while_loop()
-    elif nxtsymb == 'do':
+    elif nxtsymb == 'DO': # Встретили DO
         do_while_loop()
-    elif nxtsymb == 'for':
-        for_loop()
-    elif nxtsymb == 'goto':
+    elif nxtsymb == 'GOTO': # Встретили GOTO
         goto_statement()
         scan()
-    elif nxtsymb == 'continue':
+    elif nxtsymb == 'CONTINUE': # Встретили CONTINUE
         continue_operator()
         scan()
-    elif nxtsymb == 'return':
+    elif nxtsymb == 'RETURN':
         return_operator()
-    elif nxtsymb == 'print':
+    elif nxtsymb == 'PRINT':
         print_operator()
     else:
-        error()
+        error("Некорректный оператор")
 
 
 # имя (идентификатор)
@@ -129,11 +126,10 @@ def name():
 
 # функция
 def function():
-    if nxtsymb != 'sub': error()
+    if nxtsymb != 'SUBROUTINE': error("Ожидалось SUBROUTINE")
     scan()
-    if not (name()): error()
+    if not (name()): error("Некорректный идентификатор")
     scan()
-    compound_operator()
 
 
 # выражение
@@ -141,7 +137,7 @@ def expression():
     if nxtsymb == '(':
         scan()
         expression()
-        if nxtsymb != ')': error()
+        if nxtsymb != ')': error("Не встречено '('")
         scan()
     elif name():
         scan()
@@ -151,7 +147,7 @@ def expression():
             while nxtsymb == ',':
                 scan()
                 expression()
-            if nxtsymb != ')': error()
+            if nxtsymb != ')': error("Не встречено '('")
             scan()
         elif nxtsymb == '[':
             scan()
@@ -159,12 +155,12 @@ def expression():
             while nxtsymb == ',':
                 scan()
                 expression()
-            if nxtsymb != ']': error()
+            if nxtsymb != ']': error("Не встречено ']'")
             scan()
     elif number() or line():
         scan()
     else:
-        error()
+        error("Некорректное выражение")
     if arithmetic_operation():
         scan()
         expression()
@@ -172,27 +168,27 @@ def expression():
 
 # число (числовая константа)
 def number():
-    return nxtsymb in tokens['N'].values()
+    return nxtsymb in tokens['N'].values() # Если число есть в лексеме -> TRUE
 
 
 # целое число (числовая константа)
 def integer():
-    return nxtsymb in tokens['N'].values()
+    return nxtsymb in tokens['N'].values() # Если число есть в лексеме -> TRUE
 
 
 # вещественное число (числовая константа)
 def real_number():
-    return nxtsymb in tokens['N'].values()
+    return nxtsymb in tokens['N'].values() # Если число есть в лексеме -> TRUE
 
 
 # строка (символьная константа)
 def line():
-    return nxtsymb in tokens['C'].values()
+    return nxtsymb in tokens['C'].values() # Если строка есть в лексеме -> TRUE
 
 
 # переменная
 def variable():
-    if not (name()): error()
+    if not (name()): error("Некорректный идентификатор")
     scan()
     if nxtsymb == '[':
         scan()
@@ -206,44 +202,37 @@ def arithmetic_operation():
     return nxtsymb in ['%', '*', '**', '+', '-', '..', '/']
 
 
-# составной оператор
-def compound_operator():
-    if nxtsymb != '{': error()
-    operators()
-    if nxtsymb != '}': error()
-    scan()
-
 
 # оператор присваивания
 def assignment_operator():
     scan()
     variable()
-    if nxtsymb != '=': error()
+    if nxtsymb != '=': error("Не встречено '='")
     scan()
     expression()
 
 
 # условный оператор
 def conditional_operator():
-    if nxtsymb != 'if': error()
+    if nxtsymb != 'IF': error("Не встречено IF")
     scan()
-    if nxtsymb != '(': error()
+    if nxtsymb != '(': error("Ожидалось '('")
     condition()
-    if nxtsymb != ')': error()
+    if nxtsymb != ')': error("Не встречено ')'")
     scan()
-    compound_operator()
+    # compound
     if nxtsymb == 'else':
         scan()
-        compound_operator()
+        # compound compound_operator()
 
 
 # условие
 def condition():
     if unary_log_operation():
         scan()
-        if nxtsymb != '(': error()
+        if nxtsymb != '(': error("Ожидалось '('")
         log_expression()
-        if nxtsymb != ')': error()
+        if nxtsymb != ')': error("Не встречено ')'")
         scan()
     else:
         log_expression()
@@ -283,14 +272,14 @@ def while_loop():
     condition()
     if nxtsymb != ')': error()
     scan()
-    compound_operator()
+    # compound_operator()
 
 
 # цикл do while
 def do_while_loop():
     if nxtsymb != 'do': error()
     scan()
-    compound_operator()
+    #compound_operator()
     if nxtsymb != 'while': error()
     scan()
     if nxtsymb != '(': error()

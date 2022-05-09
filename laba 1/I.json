@@ -1,5 +1,6 @@
 {
     "I1": "factorial",
-    "I2": "n",
-    "I3": "nfact"
+    "I2": "nfact",
+    "I3": "n",
+    "I4": "END"
 }
