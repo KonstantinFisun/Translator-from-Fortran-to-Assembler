@@ -1,0 +1,1 @@
+factorial IMPLICIT NONE INTEGER PROGRAM nfact INTEGER :: n nfact 1 n = 1 Ì1 : n 10 <= nfact nfact n n * = n 1 PRINT * n " " nfact END ÊÏ PROGRAM1 Ô + = DO WHILE Ì1 = :: 

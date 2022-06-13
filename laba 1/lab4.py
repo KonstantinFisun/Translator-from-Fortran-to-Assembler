@@ -57,7 +57,7 @@ def program():
     if nxtsymb != "NONE": error("Ожидалось NONE") # Если не встретили NONE
     operators()
     scan()
-    if nxtsymb != program: error("Программа не закончена корректным именем")
+    if nxtsymb != "PROGRAM": error("Программа не закончена корректным именем")
 
 # операторы
 def operators():
@@ -68,7 +68,7 @@ def operators():
                         'CONTINUE', 'RETURN', 'PRINT']:
         operator() # Встретили оператор
 
-        if nxtsymb == '}':
+        if nxtsymb == 'END':
             break
 
 
@@ -76,7 +76,7 @@ def operators():
 def operator():
     if name():
         scan()
-        if nxtsymb == ':':
+        if nxtsymb == '::':
             scan()
             operator()
         elif nxtsymb == '(':
@@ -85,18 +85,18 @@ def operator():
             while nxtsymb == ',':
                 scan()
                 expression()
-            if nxtsymb != ')': error()
+            if nxtsymb != ')': error("Не встречано ')'")
             scan()
         elif nxtsymb == '[':
             scan()
             expression()
-            if nxtsymb != ']': error()
+            if nxtsymb != ']': error("Не встречано ']'")
             scan()
         elif nxtsymb == '=':
             scan()
             expression()
         else:
-            error()
+            error("Не известная операция с именем")
     elif nxtsymb == 'SUBROUTINE': # Встретили функцию
         function()
     elif nxtsymb == 'IF': # Встретили IF
@@ -193,7 +193,7 @@ def variable():
     if nxtsymb == '[':
         scan()
         expression()
-        if nxtsymb != ']': error()
+        if nxtsymb != ']': error("Не встречано ']'")
         scan()
 
 
@@ -266,68 +266,63 @@ def binary_log_operation():
 
 # цикл while
 def while_loop():
-    if nxtsymb != 'while': error()
+    if nxtsymb != 'WHILE': error("Ожидалось WHILE")
     scan()
-    if nxtsymb != '(': error()
+    if nxtsymb != '(': error("Ожидалось '('")
     condition()
-    if nxtsymb != ')': error()
+    if nxtsymb != ')': error("Ожидалось ')'")
     scan()
     # compound_operator()
 
 
 # цикл do while
 def do_while_loop():
-    if nxtsymb != 'do': error()
+    if nxtsymb != 'DO': error("Не встречано 'DO'")
     scan()
     #compound_operator()
-    if nxtsymb != 'while': error()
+    if nxtsymb != 'WHILE': error("Не встречано 'WHILE'")
     scan()
-    if nxtsymb != '(': error()
+    if nxtsymb != '(': error("Не встречано '('")
     scan()
     condition()
-    if nxtsymb != ')': error()
+    if nxtsymb != ')': error("Не встречано ')'")
 
 
 # цикл for
 def for_loop():
-    if nxtsymb != 'for': error()
+    if nxtsymb != 'DO': error("Не встречано 'DO'")
     scan()
-    if nxtsymb != '(': error()
+    if nxtsymb != '(': error("Не встречано '())'")
     assignment_operator()
-    if nxtsymb != ';': error()
-    condition()
-    if nxtsymb != ';': error()
-    assignment_operator()
-    if nxtsymb != ')': error()
+    if nxtsymb != ')': error("Не встречано ')'")
     scan()
     compound_operator()
 
 
 # оператор goto
 def goto_statement():
-    if nxtsymb != 'goto': error()
+    if nxtsymb != 'GO TO': error("Не встречано 'GO TO'")
     scan()
-    if not (name()): error()
+    if not (name()): error("Не встречана метка")
     scan()
 
 
 # оператор continue
 def continue_operator():
-    return nxtsymb == 'continue'
+    return nxtsymb == 'CONTINUE'
 
 
 # оператор return
 def return_operator():
-    if nxtsymb != 'return': error()
+    if nxtsymb != 'RETURN': error("Не встречано return")
     scan()
     expression()
 
 
 # оператор print
 def print_operator():
-    if nxtsymb != 'print': error()
+    if nxtsymb != 'RPINT': error("Не встречано print")
     scan()
     expression()
-
 
 program()
